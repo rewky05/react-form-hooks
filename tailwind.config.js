@@ -4,7 +4,8 @@ export default {
   theme: {
     extend: {
       boxShadow: {
-        'inner': 'inset 0 2px 4px 0 rgba(0, 0, 0, 0.05)', 
+        'inner': 'inset 0 6px 10px 0 rgba(0, 0, 0, 0.22)', 
+        'xl': '0 10px 25px -5px rgb(0 0 0 / 0.25), 0 4px 10px -6px rgb(0 0 0 / 0.3)',
       },
       colors: {
         lightgrey: "#f5f5f5",
@@ -13,27 +14,6 @@ export default {
         paleblue: "#ADD8E6",
       }
     },
-    // colors: {
-    //   green: "#63A57B",
-    //   cyan: "#55C0A0",
-    //   gray: "#D9D9D9",
-    //   darkgray: "#646464",
-    //   hgray: "#646464",
-    //   lgray: "#534141",
-    //   pgray: "#545454",
-    //   white: "#FFFFFFFF",
-    //   black: "#000",
-    //   gradientgreen: "#0EC4BC",
-    //   gradientcyan: "#0E9F76",
-    //   buttonfrom: "#6BB385",
-    //   buttonto: "#3C7D53",
-    //   buttonborder: "#ffffff5a",
-    //   deepgray: "#333333",
-    //   councilborder: "#63A57B",
-    //   navbutton: "#97BFA8",
-    //   navmobile: "#62C0AF",
-    //   footerbg: "#444B46",
-    // },
     screens: {
       xxs: "320px",
       xs: "480px",

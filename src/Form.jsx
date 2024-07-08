@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { database } from "../firebase";
 import { ref, set, onValue, off } from "firebase/database";
 import Modal from "./components/Modal";
+import { IoPersonCircle } from "react-icons/io5";
 
 const Form = () => {
   const [employees, setEmployees] = useState([]);
@@ -103,7 +104,9 @@ const Form = () => {
     setPosition(employee ? employee.position : "");
     setDepartment(employee ? employee.department : "");
     setSuccessfulMessage(
-      `You've successfully submitted your rating for ${employee ? employee.name : ''}.`
+      `You've successfully submitted your rating for ${
+        employee ? employee.name : ""
+      }.`
     );
   };
 
@@ -144,7 +147,10 @@ const Form = () => {
     };
 
     try {
-      await set(ref(database, `Employees/${selectedEmployee.id}`), employeeData);
+      await set(
+        ref(database, `Employees/${selectedEmployee.id}`),
+        employeeData
+      );
       setConfirmationModal(false);
       setDoneModal(true);
 
@@ -161,113 +167,150 @@ const Form = () => {
   };
 
   return (
-    <div className="p-16">
-      <div className="flex justify-end">
-        <span className="p-1">Icon</span>
-        <h3 className="p-1">QR Manager</h3>
+    <div className="">
+      <div className="grid grid-cols-3 p-8 shadow-xl bg-lightgrey">
+        <span></span>
+        <div className="">
+          <h1 className="text-center p-1 text-2xl text-darkgrey font-[800]">
+            PERFORMANCE APPRAISAL
+          </h1>
+        </div>
+        <div className="flex justify-end items-center">
+          <span className="p-1">
+            <IoPersonCircle size={30} />
+          </span>
+          <h3 className="p-1 font-semibold">QR Manager</h3>
+        </div>
       </div>
-      <form onSubmit={checkData}>
+      <form className="bg-paleblue m-8 rounded-[2.2rem]" onSubmit={checkData}>
         <div className="flex flex-col">
-          <h1 className="text-center">PERFORMANCE APPRAISAL</h1>
-          <div className="flex justify-evenly p-4">
-            <div className="flex">
+          <div className="flex justify-evenly pt-8">
+            <div className="flex border outline-none bg-lightgrey mx-4 py-2 px-4 rounded-lg shadow-inner text-darkgrey font-semibold">
               <h3>Employee: </h3>
               <select
+                className="pl-2 bg-transparent"
                 value={selectedEmployee.id || ""}
                 onChange={handleEmployeeSelect}
                 required
               >
-                <option value="">Select</option>
+                <option className="font-sans" value="">Select</option>
                 {employees.map((employee) => (
-                  <option key={employee.id} value={employee.id}>
+                  <option className="appearance-nonefont-sans" key={employee.id} value={employee.id}>
                     {employee.name}
                   </option>
                 ))}
               </select>
             </div>
-            <div className="flex">
+            <div className="flex border outline-none bg-lightgrey mx-4 py-2 px-4 rounded-lg shadow-inner text-darkgrey font-semibold">
               <h3>Position: </h3>
               <input
                 type="text"
                 value={position}
                 readOnly
                 required
-                className="outline-none px-1"
+                className="outline-none px-1 bg-transparent"
               />
             </div>
-            <div className="flex">
+            <div className="flex border outline-none bg-lightgrey mx-4 py-2 px-4 rounded-lg shadow-inner text-darkgrey font-semibold">
               <h3>Department: </h3>
               <input
                 type="text"
                 value={department}
                 readOnly
                 required
-                className="outline-none px-1"
+                className="outline-none px-1 bg-transparent"
               />
             </div>
           </div>
-          <div className="flex justify-evenly p-4">
-            <div className="w-1/3"></div>
-            <div className="w-2/3 flex justify-evenly">
-              <span className="ml-14">Poor</span>
-              <span className="ml-6">Satisfactory</span>
-              <span className="mr-10">Excellent</span>
-            </div>
-          </div>
-          {criteriaList.map((criteria) => (
-            <div key={criteria.name} className="p-4">
-              <h2 className="font-bold py-2">{criteria.name}</h2>
-              <div className="flex flex-wrap">
-                {criteria.criterias.map((paragraph, index) => (
-                  <div key={index} className="mb-2 w-full flex items-center">
-                    <p className="w-1/3">{paragraph}</p>
-                    <div className="flex w-2/3 justify-evenly">
-                      <input
-                        type="radio"
-                        id={`${criteria.name}-poor-${index}`}
-                        name={`${criteria.name}-${index}`}
-                        value="1"
-                        required
-                        onChange={() => handleRadioChange(criteria.name, index, 1)}
-                        checked={radioSelections[`${criteria.name}-${index}`] === 1}
-                      />
-                      <input
-                        type="radio"
-                        id={`${criteria.name}-satisfactory-${index}`}
-                        name={`${criteria.name}-${index}`}
-                        value="3"
-                        onChange={() => handleRadioChange(criteria.name, index, 3)}
-                        checked={radioSelections[`${criteria.name}-${index}`] === 3}
-                      />
-                      <input
-                        type="radio"
-                        id={`${criteria.name}-excellent-${index}`}
-                        name={`${criteria.name}-${index}`}
-                        value="5"
-                        onChange={() => handleRadioChange(criteria.name, index, 5)}
-                        checked={radioSelections[`${criteria.name}-${index}`] === 5}
-                      />
-                    </div>
-                  </div>
-                ))}
+          <div className="">
+            <div className="bg-lightgrey mx-4 my-8 p-4 rounded-2xl shadow-xl">
+              <div className="flex justify-evenly p-4">
+                <div className="w-1/3"></div>
+                <div className="w-2/3 flex justify-evenly font-semibold text-lg text-darkgrey px-10">
+                  <span className="">Poor</span>
+                  <span className="ml-2">Satisfactory</span>
+                  <span className="">Excellent</span>
+                </div>
               </div>
+              {criteriaList.map((criteria) => (
+                <div key={criteria.name} className="pb-4 border-b mx-6">
+                  <p className="font-bold py-4 text-darkgrey text-lg">
+                    {criteria.name}
+                  </p>
+                  <div className="flex flex-wrap">
+                    {criteria.criterias.map((paragraph, index) => (
+                      <div
+                        key={index}
+                        className="mb-2 w-full flex items-center"
+                      >
+                        <p className="w-1/3">{paragraph}</p>
+                        <div className="flex w-2/3 justify-evenly">
+                          <input
+                            className="w-5 h-5 m-2"
+                            type="radio"
+                            id={`${criteria.name}-poor-${index}`}
+                            name={`${criteria.name}-${index}`}
+                            value="1"
+                            required
+                            onChange={() =>
+                              handleRadioChange(criteria.name, index, 1)
+                            }
+                            checked={
+                              radioSelections[`${criteria.name}-${index}`] === 1
+                            }
+                          />
+                          <input
+                            className="w-5 h-5 m-2"
+                            type="radio"
+                            id={`${criteria.name}-satisfactory-${index}`}
+                            name={`${criteria.name}-${index}`}
+                            value="3"
+                            onChange={() =>
+                              handleRadioChange(criteria.name, index, 3)
+                            }
+                            checked={
+                              radioSelections[`${criteria.name}-${index}`] === 3
+                            }
+                          />
+                          <input
+                            className="w-5 h-5 m-2"
+                            type="radio"
+                            id={`${criteria.name}-excellent-${index}`}
+                            name={`${criteria.name}-${index}`}
+                            value="5"
+                            onChange={() =>
+                              handleRadioChange(criteria.name, index, 5)
+                            }
+                            checked={
+                              radioSelections[`${criteria.name}-${index}`] === 5
+                            }
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-          <div>
-            <textarea
-              className="p-3 my-2 border outline-none rounded-md flex w-full"
-              rows={6}
-              placeholder="Suggestions"
-              name="suggestions"
-              value={suggestions}
-              onChange={handleSuggestionsChange}
-              required
-            ></textarea>
-          </div>
-          <div className="flex justify-end">
-            <button type="submit" className="p-1 px-4 my-2 border outline-none rounded-md">
-              Finish
-            </button>
+            <div className="flex justify-center">
+              <textarea
+                className="border outline-none flex w-full bg-lightgrey mx-4 my-4 p-4 rounded-2xl shadow-inner"
+                rows={6}
+                placeholder="Suggestions"
+                name="suggestions"
+                value={suggestions}
+                onChange={handleSuggestionsChange}
+                required
+              ></textarea>
+            </div>
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="py-2 px-6 text-xl font-[500] shadow-xl outline-none rounded-md bg-primaryblue mx-4 mb-4 text-white"
+              >
+                Finish
+              </button>
+            </div>
           </div>
         </div>
       </form>
