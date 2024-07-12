@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { database } from "../firebase";
-import { ref, set, onValue, off } from "firebase/database";
+import { ref, set, get, onValue, off } from "firebase/database";
 import Modal from "./components/Modal";
 import { IoPersonCircle } from "react-icons/io5";
 
@@ -17,8 +17,6 @@ const Form = () => {
   const [confirmationModal, setConfirmationModal] = useState(false);
   const [doneModal, setDoneModal] = useState(false);
   const [successfulMessage, setSuccessfulMessage] = useState("");
-  const buttonTextCancel = "Cancel";
-  const buttonTextOkay = "Okay";
   const confirmationMessage = "Are you sure you want to submit?";
 
   const criteriaList = [
@@ -139,24 +137,27 @@ const Form = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const employeeData = {
-      ...selectedEmployee,
-      rating: ratings,
-      suggestions: suggestions,
-    };
-
+  
     try {
-      await set(
-        ref(database, `Employees/${selectedEmployee.id}`),
-        employeeData
-      );
+      const employeeRef = ref(database, `Employees/${selectedEmployee.id}`);
+      const snapshot = await get(employeeRef);
+      const existingEmployeeData = snapshot.val();
+  
+      const updatedEmployeeData = {
+        ...existingEmployeeData,
+        rating: ratings,
+        suggestions: suggestions,
+      };
+  
+      // Update the employee data in Firebase
+      await set(employeeRef, updatedEmployeeData);
+  
+      // Reset form state and show success modal
       setConfirmationModal(false);
       setDoneModal(true);
-
       setSelectedEmployee({});
-      setPosition("");
-      setDepartment("");
+      setPosition("N/A");
+      setDepartment("N/A");
       setRatings({});
       setRadioSelections({});
       setSuggestions("");
@@ -165,6 +166,7 @@ const Form = () => {
       alert("Failed to save data.");
     }
   };
+  
 
   return (
     <div className="">
@@ -188,14 +190,14 @@ const Form = () => {
             <div className="flex border outline-none bg-lightgrey mx-4 py-2 px-4 rounded-lg shadow-inner text-darkgrey font-semibold">
               <h3>Employee: </h3>
               <select
-                className="pl-2 bg-transparent"
+                className="pl-2 bg-transparent outline-none"
                 value={selectedEmployee.id || ""}
                 onChange={handleEmployeeSelect}
                 required
               >
                 <option className="font-sans" value="">Select</option>
                 {employees.map((employee) => (
-                  <option className="appearance-nonefont-sans" key={employee.id} value={employee.id}>
+                  <option className="appearance-none font-sans" key={employee.id} value={employee.id}>
                     {employee.name}
                   </option>
                 ))}
@@ -319,7 +321,7 @@ const Form = () => {
           message={confirmationMessage}
           onCancel={() => setConfirmationModal(false)}
           onSubmit={handleSubmit}
-          buttonText={buttonTextCancel}
+          // hideSubmitButton={false}
         />
       )}
       {doneModal && (
@@ -327,8 +329,7 @@ const Form = () => {
           message={successfulMessage}
           onCancel={() => setDoneModal(false)}
           onSubmit={() => setDoneModal(false)}
-          buttonText={buttonTextOkay}
-          hideCancelButton
+          hideSubmitButton
         />
       )}
     </div>
